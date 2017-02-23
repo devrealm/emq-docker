@@ -199,10 +199,10 @@ do
 done
 
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqttd start'
-if [ -z ${EMQ_ADMIN_DASHBOARD+x} ]; 
-then 
+if [ x"${EMQ_ADMIN_DASHBOARD}" = x ]
+then
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is the default'
-else 
+else
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is set to $EMQ_ADMIN_PASSWORD'
 /opt/emqttd/bin/emqttd_ctl admins passwd admin $EMQ_ADMIN_PASSWORD
 fi
@@ -213,7 +213,7 @@ fi
 #          and docker dispatching system can known and restart this container.
 IDLE_TIME=0
 while [ x$(/opt/emqttd/bin/emqttd_ctl status |grep 'is running'|awk '{print $1}') != x ]
-do  
+do
     IDLE_TIME=`expr ${IDLE_TIME} + 1`
     echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqttd running'
     sleep 20
