@@ -150,6 +150,11 @@ echo "EMQ_HTTPS_MAX_CLIENTS=${EMQ_HTTPS_MAX_CLIENTS}"
 fi
 sed -i -e "s/^#*\s*mqtt.listener.https.max_clients\s*=\s*.*/mqtt.listener.https.max_clients = ${EMQ_HTTPS_MAX_CLIENTS}/g" /opt/emqttd/etc/emq.conf
 
+if [ x"${EMQ_ADMIN_PASSWORD}" = x ]
+then
+EMQ_ADMIN_PASSWORD=public
+echo "EMQ_ADMIN_PASSWORDS=${EMQ_ADMIN_PASSWORD}"
+fi
 
 if [ x"${EMQ_MAX_PACKET_SIZE}" = x ]
 then
@@ -194,6 +199,13 @@ do
 done
 
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqttd start'
+if [ -z ${EMQ_ADMIN_DASHBOARD+x} ]; 
+then 
+echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is the default'
+else 
+echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is set to $EMQ_ADMIN_PASSWORD'
+/opt/emqttd/bin/emqttd_ctl admins passwd admin $EMQ_ADMIN_PASSWORD
+fi
 
 # monitor emqttd is running, or the docker must stop to let docker PaaS know
 # warning: never use infinite loops such as `` while true; do sleep 1000; done`` here
