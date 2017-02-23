@@ -199,11 +199,11 @@ do
 done
 
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqttd start'
-if [ x"${EMQ_ADMIN_DASHBOARD}" = x ]
+if [ x"${EMQ_ADMIN_PASSWORD}" = x ]
 then
 echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is the default'
 else
-echo '['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is set to $EMQ_ADMIN_PASSWORD'
+echo "['$(date -u +"%Y-%m-%dT%H:%M:%SZ")']:emqtt dashboard admin password is set to $EMQ_ADMIN_PASSWORD"
 /opt/emqttd/bin/emqttd_ctl admins passwd admin $EMQ_ADMIN_PASSWORD
 fi
 
