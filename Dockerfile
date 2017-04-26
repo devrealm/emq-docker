@@ -1,6 +1,7 @@
 FROM alpine:3.4
 
 MAINTAINER Huang Rui <vowstar@gmail.com>
+MAINTENER George Vagenas <gvagenas@gmail.com>
 
 ENV EMQ_VERSION=v2.1
 
