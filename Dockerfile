@@ -1,7 +1,7 @@
 FROM alpine:3.5
 
 MAINTAINER Huang Rui <vowstar@gmail.com>, Turtle <turtled@emqtt.io>
-MAINTENER George Vagenas <gvagenas@gmail.com>
+MAINTAINER George Vagenas <gvagenas@gmail.com>
 
 ENV EMQ_VERSION=v2.1.2
 
