@@ -6,7 +6,7 @@ Docker image home:
   - https://hub.docker.com/r/devrealm/emqtt/
   - https://github.com/devrealm/emq-docker
 
-Current docker image size: 37.1 MB
+Current docker image size: 77.6 MB
 
 ### Get emqttd
 
@@ -17,19 +17,46 @@ docker pull devrealm/emqtt
 ### Run emqttd
 
 ```
-docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -e "EMQ_ALLOW_ANONYMOUS=false" -e "EMQ_LOADED_PLUGINS=emq_recon,emq_dashboard,emq_mod_presence,emq_mod_retainer,emq_mod_subscription,emq_auth_username"  -e "EMQ_LOG_LEVEL=debug" -e "EMQ_AD
-MIN_PASSWORD=your_password"  -v /opt/emqtt/data:/opt/emqttd/data -d devrealm/emqtt
+docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -e "EMQ_LOG_LEVEL=debug" -e "EMQ_ADMIN_PASSWORD=your_password" -e "EMQ_NAME=emqtt_broker" -d devrealm/emqtt
 ```
 
 The emqtt erlang broker runs as linux user `emqtt` in the docker container.
+
+### Client authentication with authentication file
+
+Mqtt client authentication can be provided using an authentication file and change in the container configuration.
+
+First, create the `emq_auth_username.conf` configuration file in the host:
+
+```bash
+##--------------------------------------------------------------------
+## Username Authentication Plugin
+##--------------------------------------------------------------------
+
+## Examples:
+auth.user.1.username = user1
+auth.user.1.password = pass1234
+auth.user.2.username = user2
+auth.user.2.password = pass1234
+##auth.user.1.username = admin
+##auth.user.1.password = public
+##auth.user.2.username = feng@emqtt.io
+##auth.user.2.password = public
+##auth.user.3.username = name~!@#$%^&*()_+
+##auth.user.3.password = pwsswd~!@#$%^&*()_+
+``` 
+
+And then run the container using:
+
+`docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -e "EMQ_MQTT__ALLOW_ANONYMOUS=false" -e "EMQ_LOG_LEVEL=debug" -e "EMQ_ADMIN_PASSWORD=your_password" -e "EMQ_LOADED_PLUGINS=emq_recon,emq_modules,emq_retainer,emq_dashboard,emq_auth_username" -e "EMQ_NAME=emqtt_broker" -v /host/folder/emq_auth_username.conf:/opt/emqttd/etc/plugins/emq_auth_username.conf -d devrealm/emqtt`
+
 
 ### Let's Encrypt certificates
 
 In order for the broker to run with Let's Encrypt certificates use the following docker run command:
 
-```bash
-docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -v /etc/letsencrypt/live/yourdomain.com/privkey.pem:/opt/emqttd/etc/certs/key.pem -v /etc/letsencrypt/live/yourdomain.com/fullchain.pem:/opt/emqttd/etc/certs/cert.pem  -e "EMQ_ALLOW_ANONYMOUS=false" -e "EMQ_LOADED_PLUGINS=emq_recon,emq_dashboard,emq_mod_presence,emq_mod_retainer,emq_mod_subscription,emq_auth_username"  -e "EMQ_LOG_LEVEL=debug" -e "EMQ_AD
-MIN_PASSWORD=your_password"  -v /opt/emqtt/data:/opt/emqttd/data -d devrealm/emqtt
+```
+docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -v /etc/letsencrypt/live/yourdomain.com/privkey.pem:/opt/emqttd/etc/certs/key.pem -v /etc/letsencrypt/live/yourdomain.com/fullchain.pem:/opt/emqttd/etc/certs/cert.pem -e "EMQ_LOG_LEVEL=debug" -e "EMQ_ADMIN_PASSWORD=your_password"  -d devrealm/emqtt
 ```
 
 Notice the :
