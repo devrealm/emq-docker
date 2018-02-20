@@ -23,6 +23,19 @@ MIN_PASSWORD=your_password"  -v /opt/emqtt/data:/opt/emqttd/data -d devrealm/emq
 
 The emqtt erlang broker runs as linux user `emqtt` in the docker container.
 
+### Let's Encrypt certificates
+
+In order for the broker to run with Let's Encrypt certificates use the following docker run command:
+
+```bash
+docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -v /etc/letsencrypt/live/yourdomain.com/privkey.pem:/opt/emqttd/etc/certs/key.pem -v /etc/letsencrypt/live/yourdomain.com/fullchain.pem:/opt/emqttd/etc/certs/cert.pem  -e "EMQ_ALLOW_ANONYMOUS=false" -e "EMQ_LOADED_PLUGINS=emq_recon,emq_dashboard,emq_mod_presence,emq_mod_retainer,emq_mod_subscription,emq_auth_username"  -e "EMQ_LOG_LEVEL=debug" -e "EMQ_AD
+MIN_PASSWORD=your_password"  -v /opt/emqtt/data:/opt/emqttd/data -d devrealm/emqtt
+```
+
+Notice the :
+  - `-v /etc/letsencrypt/live/yourdomain.com/privkey.pem:/opt/emqttd/etc/certs/key.pem`
+  - `-v /etc/letsencrypt/live/yourdomain.com/fullchain.pem:/opt/emqttd/etc/certs/cert.pem`
+
 ### Configuration
 
 Use the environment variable to configure the EMQ docker container
