@@ -2,27 +2,24 @@
 
 *EMQ* (Erlang MQTT Broker) is a distributed, massively scalable, highly extensible MQTT message broker written in Erlang/OTP.
 
+Docker image home:
+  - https://hub.docker.com/r/devrealm/emqtt/
+  - https://github.com/devrealm/emq-docker
+
 Current docker image size: 37.1 MB
 
 ### Get emqttd
 
-You can build this docker image by yourself.
-
 ```bash
-git clone -b master https://github.com/emqtt/emq_docker.git
-cd emq_docker
-docker build -t emq:latest .
+docker pull devrealm/emqtt
 ```
 
 ### Run emqttd
 
-Execute some command under this docker image
-
-``docker run --rm -ti -v `pwd`:$(somewhere) emq/$(image) $(somecommand)``
-
-For example
-
-``docker run --rm -ti --name emq -p 18083:18083 -p 1883:1883 emq:latest``
+```
+docker run --restart=always -ti --name emqtt -p 18083:18083 -p 1883:1883 -p 8083:8083 -p 8443:8443 -p 8084:8084 -p 8080:8080 -e "EMQ_ALLOW_ANONYMOUS=false" -e "EMQ_LOADED_PLUGINS=emq_recon,emq_dashboard,emq_mod_presence,emq_mod_retainer,emq_mod_subscription,emq_auth_username"  -e "EMQ_LOG_LEVEL=debug" -e "EMQ_AD
+MIN_PASSWORD=your_password"  -v /opt/emqtt/data:/opt/emqttd/data -d devrealm/emqtt
+```
 
 The emqtt erlang broker runs as linux user `emqtt` in the docker container.
 
@@ -84,7 +81,7 @@ If set ``EMQ_NAME`` and ``EMQ_HOST``, and unset ``EMQ_NODE__NAME``, ``EMQ_NODE__
 
 For example, set mqtt tcp port to 1883
 
-``docker run --rm -ti --name emq -e EMQ_LISTENER__TCP__EXTERNAL=1883 -p 18083:18083 -p 1883:1883 emq:latest``
+``docker run --rm -ti --name emq -e EMQ_LISTENER__TCP__EXTERNAL=1883 -p 18083:18083 -p 1883:1883 devrealm/emqtt``
 
 #### EMQ Loaded Plugins Configuration
 
@@ -143,7 +140,7 @@ docker run --rm -ti --name emq -p 18083:18083 -p 1883:1883 -p 4369:4369 \
     -e EMQ_AUTH__REDIS__SERVER="your.redis.server:6379" \
     -e EMQ_AUTH__REDIS__PASSWORD="password_for_redis" \
     -e EMQ_AUTH__REDIS__PASSWORD_HASH=plain \
-    emq:latest
+    devrealm/emqtt
 
 ```
 
@@ -162,7 +159,7 @@ docker run --rm -ti --name emq -p 18083:18083 -p 1883:1883 -p 4369:4369 -p 6000-
     -e EMQ_HOST="s2.emqtt.io" \
     -e EMQ_LISTENER__TCP__EXTERNAL=1883 \
     -e EMQ_JOIN_CLUSTER="emq@s1.emqtt.io" \
-    emq:latest
+    devrealm/emqtt
 
 ```
 
@@ -197,4 +194,4 @@ docker run --rm -ti --name emq -p 18083:18083 -p 1883:1883 -p 4369:4369 \
 
 ### Thanks
 
-@je-al https://github.com/emqtt/emq-docker/issues/2 The idea of variable names get mapped, dots get replaced by __.
+Report issues here: https://github.com/devrealm/emq-docker/issues
